@@ -1,6 +1,37 @@
 #!/usr/bin/python3
+
+
 """
 Interface with an Iskraemeco MT174 electricity meter via a serial connection
+
+-------------------------------------------------------------------------------
+MIT License
+
+Copyright (c) 2023 Cyril Jaquier
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+Public repository:
+https://github.com/camtarn/mt174.git
+Project was forked from original and modified by Andy Walker / Sequentec
 """
 
 # Imports: standard library
@@ -69,8 +100,8 @@ class MT174:
     # e.g. 1-0:1.8.1*255(0001798.478*kWh)
     DATABLOCK_REGEX = re.compile(r"(?:\d-\d:)?(\S+\.\S+\.\d+)(?:\*255)?\((.+)\)")
 
-    def __init__(self, port: int):
-        self.__port = port
+    def __init__(self, port: str):
+        self.port = port
         logging.info("Created MT174, port = %s", port)
 
     @staticmethod
@@ -80,8 +111,8 @@ class MT174:
 
     def read(self) -> str:
         """Perform a handshake sequence with the meter in order to read a data block"""
-        logging.debug("Opening serial port %s", self.__port)
-        mt174 = serial.Serial(port = self.__port, baudrate=MT174.BAUDRATE, bytesize=7, parity='E', stopbits=1, timeout=1.5)
+        logging.debug("Opening serial port %s", self.port)
+        mt174 = serial.Serial(port = self.port, baudrate=MT174.BAUDRATE, bytesize=7, parity='E', stopbits=1, timeout=1.5)
         try:
             # 1 ->
             logging.debug("Writing hello message")
